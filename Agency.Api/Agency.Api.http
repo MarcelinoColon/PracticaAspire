@@ -1,0 +1,6 @@
+@Agency.Api_HostAddress = https://localhost:7122
+
+GET {{Agency.Api_HostAddress}}/api/agencies
+Accept: application/json
+
+###

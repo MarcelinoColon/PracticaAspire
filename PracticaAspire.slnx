@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Agency.Api/Agency.Api.csproj" />
+  <Project Path="Catalog.Api/Catalog.Api.csproj" />
+  <Project Path="GraphQl.Bff/GraphQl.Bff.csproj" />
+  <Project Path="PracticaAspire.AppHost/PracticaAspire.AppHost.csproj" />
+  <Project Path="PracticaAspire.ServiceDefaults/PracticaAspire.ServiceDefaults.csproj" />
+</Solution>
