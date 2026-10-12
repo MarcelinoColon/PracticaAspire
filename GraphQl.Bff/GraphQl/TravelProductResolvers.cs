@@ -1,11 +1,12 @@
 ﻿using GraphQl.Bff.Models;
+using HotChocolate;
+using HotChocolate.Types;
 
 namespace GraphQl.Bff.GraphQl
 {
     [ExtendObjectType(typeof(TravelProductResponse))]
     public class TravelProductResolvers
     {
-        // GraphQL convertirá este método en un campo "b2bPrice(agencyId: Int!)"
         public async Task<decimal> GetB2bPriceAsync(
             [Parent] TravelProductResponse product,
             int agencyId,
@@ -13,17 +14,22 @@ namespace GraphQl.Bff.GraphQl
         {
             var client = clientFactory.CreateClient("agency-api");
 
-            // Consultamos al microservicio relacional (SQL Server)
             var agencies = await client.GetFromJsonAsync<IEnumerable<AgencyResponse>>("/api/agencies");
             var agency = agencies?.FirstOrDefault(a => a.Id == agencyId);
 
-            // Si la agencia no existe, devolvemos el precio base (sin descuento)
-            if (agency == null) return product.BasePrice;
+            // Si la agencia no existe o no tiene reglas, paga precio base
+            if (agency?.CommissionRules == null || !agency.CommissionRules.Any())
+                return product.BasePrice;
 
-            // Lógica B2B: El Admin Global (Id -1) tiene 20% de descuento. El resto 10%.
-            decimal discountPercentage = agency.Id == -1 ? 0.20m : 0.10m;
+            // MAGIA B2B: Compara la categoría del producto (Mongo) con la regla (SQL)
+            var rule = agency.CommissionRules.FirstOrDefault(r => r.DestinationCategory == product.Category);
 
-            return product.BasePrice - (product.BasePrice * discountPercentage);
+            // Si no tiene descuento para esta categoría en específico, paga precio base
+            if (rule == null)
+                return product.BasePrice;
+
+            // Calculamos el precio con el porcentaje dinámico
+            return product.BasePrice - (product.BasePrice * rule.Percentage);
         }
     }
 }

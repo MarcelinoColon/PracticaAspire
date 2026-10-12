@@ -15,13 +15,27 @@ namespace Agency.Api.Infrastructure.Repositories.Commands
             {
                 Name = request.Name,
                 ContactEmail = request.ContactEmail,
-                IsActive = true
+                IsActive = true,
+                // Mapeamos las reglas que vienen del JSON hacia la entidad Core
+                CommissionRules = request.CommissionRules?.Select(r => new Core.CommissionRule
+                {
+                    DestinationCategory = r.DestinationCategory,
+                    Percentage = r.Percentage
+                }).ToList() ?? new List<Core.CommissionRule>()
             };
 
             _db.Agencies.Add(newAgency);
             await _db.SaveChangesAsync();
 
-            return new AgencyResponse(newAgency.Id, newAgency.Name, newAgency.ContactEmail, newAgency.IsActive);
+            // Retornamos el DTO actualizado
+            return new AgencyResponse
+            {
+                Id = newAgency.Id,
+                Name = newAgency.Name,
+                ContactEmail = newAgency.ContactEmail,
+                IsActive = newAgency.IsActive,
+                CommissionRules = newAgency.CommissionRules.Select(r => new CommissionRuleDto(r.Id,r.DestinationCategory, r.Percentage)).ToList()
+            };
         }
     }
 }

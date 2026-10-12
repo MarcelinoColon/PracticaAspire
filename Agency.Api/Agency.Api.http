@@ -3,4 +3,25 @@
 GET {{Agency.Api_HostAddress}}/api/agencies
 Accept: application/json
 
+### Crear Agencia con reglas dinámicas
+
+POST {{Agency.Api_HostAddress}}/api/agencies
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Agencia Viajes El Sol",
+  "contactEmail": "contacto@viajeselsol.com",
+  "commissionRules": [
+    {
+      "destinationCategory": "Aventura",
+      "percentage": 0.15
+    },
+    {
+      "destinationCategory": "Relax",
+      "percentage": 0.10
+    }
+  ]
+}
+
 ###

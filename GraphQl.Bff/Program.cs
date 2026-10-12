@@ -27,6 +27,7 @@ builder.Services.AddHttpClient("catalog-api", client =>
 builder.Services
     .AddGraphQLServer()
     .AddQueryType<Query>()
+    .AddMutationType<Mutation>()
     .AddTypeExtension<TravelProductResolvers>();
 
 

@@ -15,12 +15,41 @@ namespace Agency.Api.Infrastructure.Repositories.Queries
         {
             var connection = _db.Database.GetDbConnection();
 
+            // Hacemos JOIN con las reglas
             const string sql = """
-            SELECT Id, Name, ContactEmail, IsActive 
-            FROM Agencies
+            SELECT 
+                a.Id, a.Name, a.ContactEmail, a.IsActive,
+                c.Id, c.DestinationCategory, c.Percentage
+            FROM Agencies a
+            LEFT JOIN CommissionRules c ON a.Id = c.AgencyId
             """;
 
-            return await connection.QueryAsync<AgencyResponse>(sql);
+            var agencyDictionary = new Dictionary<int, AgencyResponse>();
+
+            // Le decimos a Dapper que mapee 2 objetos (AgencyResponse y CommissionRuleDto)
+            await connection.QueryAsync<AgencyResponse, CommissionRuleDto, AgencyResponse>(
+                sql,
+                (agency, rule) =>
+                {
+                    // Si la agencia no está en el diccionario, la agregamos
+                    if (!agencyDictionary.TryGetValue(agency.Id, out var currentAgency))
+                    {
+                        currentAgency = agency;
+                        agencyDictionary.Add(currentAgency.Id, currentAgency);
+                    }
+
+                    // Si hay una regla (no es nula por el LEFT JOIN), la agregamos a la lista
+                    if (rule != null && !string.IsNullOrEmpty(rule.DestinationCategory))
+                    {
+                        currentAgency.CommissionRules.Add(rule);
+                    }
+
+                    return currentAgency;
+                },
+                splitOn: "Id" // Le dice a Dapper en qué columna empieza la tabla hija (CommissionRules)
+            );
+
+            return agencyDictionary.Values;
         }
     }
 }

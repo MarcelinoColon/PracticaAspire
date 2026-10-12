@@ -4,7 +4,12 @@ using Catalog.Api.Core.Ports;
 
 namespace Catalog.Api.Application.UseCases
 {
-    public record CreateProductRequest(string Name, string Category, decimal BasePrice);
+    public record CreateProductRequest(
+    string Name,
+    string Category,
+    decimal BasePrice,
+    List<ItineraryDay>? Itineraries = null,
+    List<string>? Amenities = null);
 
     public class CreateProductUseCase
     {
@@ -28,7 +33,10 @@ namespace Catalog.Api.Application.UseCases
             {
                 Name = request.Name,
                 Category = request.Category,
-                BasePrice = request.BasePrice
+                BasePrice = request.BasePrice,
+
+                Itineraries = request.Itineraries ?? new List<ItineraryDay>(),
+                Amenities = request.Amenities ?? new List<string>()
             };
 
             await _repository.CreateAsync(newProduct);

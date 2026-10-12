@@ -5,8 +5,31 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Resort Todo Incluido - Punta Cana",
-  "category": "Hotel",
-  "basePrice": 250.75
+  "name": "Expedición Amazonas VIP",
+  "category": "Aventura",
+  "basePrice": 1200.50,
+  "amenities": [
+    "Vuelo Redondo",
+    "Hotel Eco-Lodge",
+    "Guía Nativo",
+    "Seguro Médico"
+  ],
+  "itineraries": [
+    {
+      "dayNumber": 1,
+      "title": "Llegada al Lodge",
+      "description": "Recepción en el aeropuerto y traslado en lancha rápida."
+    },
+    {
+      "dayNumber": 2,
+      "title": "Caminata Nocturna",
+      "description": "Exploración de la selva virgen en búsqueda de fauna endémica."
+    }
+  ]
 }
+###
+
+GET {{Catalog.Api_HostAddress}}/api/products
+Accept: application/json
+
 ###
