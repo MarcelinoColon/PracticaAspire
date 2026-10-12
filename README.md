@@ -1,4 +1,4 @@
-# TravelAgenciesB2B - Ecosistema de Microservicios 🚀
+# TravelAgenciesB2B - Ecosistema de Microservicios
 
 Plataforma distribuida orientada a eventos para la gestión de paquetes turísticos y reglas de comisiones dinámicas B2B. Orquestada completamente con **.NET Aspire**, demostrando persistencia políglota, federación de datos mediante GraphQL y comunicación asíncrona.
 
