@@ -1,6 +1,9 @@
 ﻿using Catalog.Api.Core;
 using Catalog.Api.Core.Entities;
 using Catalog.Api.Core.Ports;
+using MassTransit;
+using MassTransit.Transports;
+using TravelAgenciesB2B.Messages;
 
 namespace Catalog.Api.Application.UseCases
 {
@@ -14,10 +17,12 @@ namespace Catalog.Api.Application.UseCases
     public class CreateProductUseCase
     {
         private readonly IProductRepository _repository;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public CreateProductUseCase(IProductRepository repository)
+        public CreateProductUseCase(IProductRepository repository, IPublishEndpoint publishEndpoint)
         {
             _repository = repository;
+            _publishEndpoint = publishEndpoint;
         }
 
         public async Task<Result<TravelProduct>> ExecuteAsync(CreateProductRequest request)
@@ -40,6 +45,12 @@ namespace Catalog.Api.Application.UseCases
             };
 
             await _repository.CreateAsync(newProduct);
+
+            await _publishEndpoint.Publish(new ProductCreatedEvent(
+            newProduct.Id!,
+            newProduct.Name,
+            newProduct.Category,
+            newProduct.BasePrice));
 
             return Result<TravelProduct>.Success(newProduct);
         }

@@ -2,14 +2,6 @@ using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-//var apiService = builder.AddProject<Projects.PracticaAspire_ApiService>("apiservice")
-//    .WithHttpHealthCheck("/health");
-
-//builder.AddProject<Projects.PracticaAspire_Web>("webfrontend")
-//    .WithExternalHttpEndpoints()
-//    .WithHttpHealthCheck("/health")
-//    .WithReference(apiService)
-//    .WaitFor(apiService);
 
 var sqlServer = builder.AddSqlServer("sql-server")
                        .AddDatabase("AgenciesDb");
@@ -17,13 +9,17 @@ var sqlServer = builder.AddSqlServer("sql-server")
 var mongoDb = builder.AddMongoDB("mongo-server")
                      .AddDatabase("CatalogDb");
 
+var messaging = builder.AddRabbitMQ("messaging");
+
 var agencyApi = builder.AddProject<Agency_Api>("agency-api")
     .WithReference(sqlServer)
-    .WaitFor(sqlServer);
+    .WaitFor(sqlServer)
+    .WithReference(messaging);
 
 var catalogApi = builder.AddProject<Catalog_Api>("catalog-api")
     .WithReference(mongoDb)
-    .WaitFor(mongoDb);
+    .WaitFor(mongoDb)
+        .WithReference(messaging);
 
 var graphqlBff = builder.AddProject<GraphQl_Bff>("graphql-bff")
     .WithReference(agencyApi)

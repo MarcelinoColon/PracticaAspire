@@ -1,3 +1,4 @@
+using Agency.Api.Application.Consumers;
 using Agency.Api.Application.Interfaces.Commands;
 using Agency.Api.Application.Interfaces.Queries;
 using Agency.Api.Application.UseCases;
@@ -5,6 +6,7 @@ using Agency.Api.Endpoints;
 using Agency.Api.Infrastructure;
 using Agency.Api.Infrastructure.Repositories.Commands;
 using Agency.Api.Infrastructure.Repositories.Queries;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,20 @@ builder.AddServiceDefaults();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+//RabbitMQ
+builder.Services.AddMassTransit(x =>
+{
+    // 1. Registramos el consumidor que acabamos de crear
+    x.AddConsumer<ProductCreatedConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(builder.Configuration.GetConnectionString("messaging"));
+        // 2. Le decimos a MassTransit que cree automáticamente las colas en RabbitMQ
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 
 builder.AddSqlServerDbContext<AgencyDbContext>("AgenciesDb");
