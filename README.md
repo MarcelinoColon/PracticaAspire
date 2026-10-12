@@ -6,7 +6,7 @@ Plataforma distribuida orientada a eventos para la gestión de paquetes turísti
 
 ---
 
-## 🏗 Arquitectura del Sistema
+## Arquitectura del Sistema
 
 El ecosistema está dividido en microservicios independientes, desacoplados mediante un Message Broker y unificados para el cliente a través de un patrón *Backend for Frontend (BFF)*.
 
@@ -46,7 +46,7 @@ graph TD
     style RMQ fill:#ff6600,stroke:#000,color:#fff
 ```
 
-## 🛠 Tecnologías Core
+## Tecnologías Core
 
 * **Orquestador:** .NET Aspire (Gestión de contenedores y Service Discovery)
 * **API Gateway:** GraphQL (HotChocolate)
@@ -57,7 +57,7 @@ graph TD
 
 ---
 
-## ⚙️ Características y Fases de Implementación
+## Características y Fases de Implementación
 
 ### Fase 1: Persistencia Políglota y BFF
 * Modelado de documentos complejos en **MongoDB** para paquetes turísticos.
@@ -77,7 +77,7 @@ graph TD
 
 ---
 
-## 🚀 Cómo Ejecutar el Proyecto
+## Cómo Ejecutar el Proyecto
 
 ### Requisitos Previos
 * Visual Studio 2026 (o superior).
@@ -105,7 +105,7 @@ graph TD
      npm run dev
      ```
 
-## 📊 Endpoints Clave
+## Endpoints Clave
 * **Dashboard .NET Aspire:** (Puerto dinámico asignado por VS - revisar consola)
 * **GraphQL Banana Cake Pop:** `https://localhost:7165/graphql`
 * **React Client:** `http://localhost:5173`
